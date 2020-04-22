@@ -1,16 +1,13 @@
 ## What and Why?
 
-This is the Modern Tribe Extension Template. It allows you to easily extend our plugins: The Events Calendar, Event Tickets, and their associated add-on plugins.
-
-The primary benefits of using this template is that it's gets you up-and-running quicker than building a custom plugin yourself, and it's best to extend one plugin via another plugin instead of adding custom code to your child theme's `functions.php` file.
-
-We ensure your new extension does not run if its required base plugin is not activated, which helps avoid fatal errors and means fewer `class_exists()` checks are applicable.
-
-Extensions have been available since The Events Calendar version 4.3.3 (November 16, 2016). If you try to use this template to work with versions before this date, your extension will not run at all.
-
+This is an extension to allow importing of Attendees from CSV to Event Tickets. This requires both Event Tickets and The Events Calendar to be active.
+ 
 ## How?
 
-If you want to suggest an edit to this _template_, submit a pull request to this repo.
+Activate this extension and you will see a new import option when you go to Events > Import.
+
+
+
 
 #### If you want to make your own new extension:
 
