@@ -34,7 +34,6 @@ abstract class Importer extends File_Importer {
 	 * @var array
 	 */
 	protected $required_fields = [
-		'event_name',
 		'ticket_name',
 		'attendee_name',
 		'attendee_email',
@@ -202,7 +201,9 @@ abstract class Importer extends File_Importer {
 	protected function get_event_from( array $record ) {
 		$event_name = $this->get_value_by_key( $record, 'event_name' );
 
-		if ( empty( $event_name ) ) {
+		if ( ! empty( $this->aggregator_record->meta[ $this->integration->type . '_event' ] ) ) {
+			$event_name = (int) $this->aggregator_record->meta[ $this->integration->type . '_event' ];
+		} elseif ( empty( $event_name ) ) {
 			return false;
 		}
 
@@ -333,6 +334,8 @@ abstract class Importer extends File_Importer {
 		$event = $this->get_event_from( $record );
 
 		if ( empty( $event ) ) {
+			$this->row_message = esc_html__( 'An event is required to import attendees.', 'tribe-ext-tickets-attendee-csv-importer' );
+
 			return false;
 		}
 
@@ -353,9 +356,9 @@ abstract class Importer extends File_Importer {
 
 			if ( $is_recurring ) {
 				$this->row_message = sprintf( esc_html__( 'Recurring event tickets are not supported, event %s.', 'tribe-ext-tickets-attendee-csv-importer' ), $event->post_title );
-			}
 
-			return ! $is_recurring;
+				return false;
+			}
 		}
 
 		$this->row_message = false;
