@@ -60,10 +60,7 @@ class Importer extends Importer_Base {
 	 * @throws Exception
 	 */
 	protected function create_attendee_for_ticket( $ticket, $attendee_data ) {
-		$attendee_data['full_name']    = $attendee_data['attendee_name'];
-		$attendee_data['email']        = $attendee_data['attendee_email'];
 		$attendee_data['order_status'] = 'no';
-		$attendee_data['optout']       = ! tribe_is_truthy( $attendee_data['display_optin'] );
 
 		if ( tribe_is_truthy( $attendee_data['going'] ) || 'going' === strtolower( $attendee_data['going'] ) ) {
 			$attendee_data['order_status'] = 'yes';

@@ -163,6 +163,8 @@ abstract class Importer extends File_Importer {
 		$attendee_data = (array) apply_filters( "tribe_ext_tickets_attendee_csv_importer_data_{$this->integration->type}", $attendee_data );
 
 		try {
+			$attendee_data = $this->map_csv_data_to_attendee( $attendee_data );
+
 			$attendee_id = $this->create_attendee_for_ticket( $ticket, $attendee_data );
 		} catch ( Exception $exception ) {
 			return false;
@@ -188,6 +190,25 @@ abstract class Importer extends File_Importer {
 	 * @throws \Exception
 	 */
 	abstract protected function create_attendee_for_ticket( $ticket, $attendee_data );
+
+	/**
+	 * Map an attendee from CSV fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $attendee_data CSV attendee data.
+	 *
+	 * @return array Attendee data.
+	 */
+	public function map_csv_data_to_attendee( $attendee_data ) {
+		return [
+			'full_name' => $attendee_data['attendee_name'],
+			'email'     => $attendee_data['attendee_email'],
+			'optout'    => ! tribe_is_truthy( $attendee_data['display_optin'] ),
+			'user_id'   => $attendee_data['user_id'],
+			'order_id'  => $attendee_data['order_id'],
+		];
+	}
 
 	/**
 	 * Get event from record.
@@ -302,7 +323,14 @@ abstract class Importer extends File_Importer {
 			'attendee_name'  => $this->get_value_by_key( $record, 'attendee_name' ),
 			'attendee_email' => $this->get_value_by_key( $record, 'attendee_email' ),
 			'display_optin'  => $this->get_value_by_key( $record, 'display_optin' ),
+			'user_id'        => (int) $this->get_value_by_key( $record, 'user_id' ),
+			'order_id'       => $this->get_value_by_key( $record, 'order_id' ),
 		];
+
+		if ( '' === $data['order_id'] ) {
+			// Set default.
+			$data['order_id'] = null;
+		}
 
 		if ( '' === $data['display_optin'] ) {
 			// Set default.
