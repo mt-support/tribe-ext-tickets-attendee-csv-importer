@@ -156,9 +156,12 @@ trait Attendee_API {
 		 */
 		do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $i );
 
-		$user_id = get_current_user_id();
+		// Check if user exists.
+		$user = get_user_by( 'email', $email );
 
-		update_post_meta( $attendee_id, $provider->attendee_user_id, $user_id );
+		if ( $user ) {
+			update_post_meta( $attendee_id, $provider->attendee_user_id, $user->ID );
+		}
 
 		/**
 		 * Action fired when an RSVP has had attendee tickets generated for it
