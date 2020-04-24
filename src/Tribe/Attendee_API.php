@@ -425,7 +425,7 @@ trait Attendee_API {
 		update_post_meta( $attendee_id, $provider->attendee_product_key, $product_id );
 		update_post_meta( $attendee_id, $provider->attendee_event_key, $post_id );
 		update_post_meta( $attendee_id, $provider->security_code, $provider->generate_security_code( $attendee_id ) );
-		update_post_meta( $attendee_id, $provider->order_key, $order_id );
+		update_post_meta( $attendee_id, $provider->attendee_order_key, $order_id );
 		update_post_meta( $attendee_id, $provider->attendee_optout_key, (int) $optout );
 
 		if ( 0 === $user_id && $email ) {
@@ -517,6 +517,8 @@ trait Attendee_API {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
 		}
 
+		$order = null;
+
 		if ( is_numeric( $order_id ) && 0 < $order_id ) {
 			$order = new WC_Order( $order_id );
 
@@ -568,7 +570,7 @@ trait Attendee_API {
 		update_post_meta( $attendee_id, $provider->attendee_product_key, $product_id );
 		update_post_meta( $attendee_id, $provider->attendee_event_key, $post_id );
 		update_post_meta( $attendee_id, $provider->security_code, $provider->generate_security_code( $attendee_id ) );
-		update_post_meta( $attendee_id, $provider->order_key, $order_id );
+		update_post_meta( $attendee_id, $provider->attendee_order_key, $order_id );
 		update_post_meta( $attendee_id, $provider->attendee_optout_key, (int) $optout );
 
 		if ( 0 === $user_id && $email ) {
