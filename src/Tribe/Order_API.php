@@ -182,7 +182,7 @@ trait Order_API {
 		$user_id           = isset( $order_data['user_id'] ) ? (int) $order_data['user_id'] : 0;
 		$create_user       = isset( $order_data['create_user'] ) ? (boolean) $order_data['create_user'] : true;
 		$use_existing_user = isset( $order_data['use_existing_user'] ) ? (boolean) $order_data['use_existing_user'] : true;
-		$order_status      = isset( $order_data['order_status'] ) ? $order_data['order_status'] : 'publish';
+		$order_status      = isset( $order_data['order_status'] ) ? $order_data['order_status'] : 'completed';
 		$product_id        = $ticket->ID;
 
 		$order_status = strtolower( trim( $order_status ) );
