@@ -37,10 +37,7 @@ if ( ! defined( __NAMESPACE__ . '\NS' ) ) {
 }
 
 // Do not load unless Tribe Common is fully loaded and our class does not yet exist.
-if (
-	class_exists( 'Tribe__Extension' )
-	&& ! class_exists( Main::class )
-) {
+if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 	/**
 	 * Extension main class, class begins loading on init() function.
 	 */
@@ -145,10 +142,7 @@ if (
 			$php_required_version = '5.6';
 
 			if ( version_compare( PHP_VERSION, $php_required_version, '<' ) ) {
-				if (
-					is_admin()
-					&& current_user_can( 'activate_plugins' )
-				) {
+				if ( is_admin() && current_user_can( 'activate_plugins' ) ) {
 					$message = '<p>';
 
 					$message .= sprintf( __( '%s requires PHP version %s or newer to work. Please contact your website host and inquire about updating PHP.', 'tribe-ext-tickets-attendee-csv-importer' ), $this->get_name(), $php_required_version );
@@ -175,10 +169,7 @@ if (
 			if ( empty( $this->class_loader ) ) {
 				$this->class_loader = new Tribe__Autoloader;
 				$this->class_loader->set_dir_separator( '\\' );
-				$this->class_loader->register_prefix(
-					NS,
-					__DIR__ . DIRECTORY_SEPARATOR . 'src/Tribe'
-				);
+				$this->class_loader->register_prefix( NS, __DIR__ . DIRECTORY_SEPARATOR . 'src/Tribe' );
 			}
 
 			$this->class_loader->register_autoloader();

@@ -114,15 +114,6 @@ abstract class Integration {
 	abstract public function get_importer( $instance, File_Reader $file_reader );
 
 	/**
-	 * Get import label, used for the post type label in EA Import Origin.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string
-	 */
-	abstract public function get_import_label();
-
-	/**
 	 * Add Attendees to list of CSV post types.
 	 *
 	 * @since 1.0.0
@@ -144,24 +135,6 @@ abstract class Integration {
 	}
 
 	/**
-	 * Add import option to list.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $import_options List of import options.
-	 *
-	 * @return array List of import options.
-	 */
-	public function add_import_option( array $import_options ) {
-		// EA removes "tribe_" from the post types.
-		$no_tribe = str_replace( 'tribe_', '', $this->type );
-
-		$import_options[ $no_tribe ] = $this->get_import_label();
-
-		return $import_options;
-	}
-
-	/**
 	 * Get the customized post type object.
 	 *
 	 * @since 1.0.0
@@ -178,6 +151,33 @@ abstract class Integration {
 		$post_type_obj->labels->name = $this->get_import_label();
 
 		return $post_type_obj;
+	}
+
+	/**
+	 * Get import label, used for the post type label in EA Import Origin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	abstract public function get_import_label();
+
+	/**
+	 * Add import option to list.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $import_options List of import options.
+	 *
+	 * @return array List of import options.
+	 */
+	public function add_import_option( array $import_options ) {
+		// EA removes "tribe_" from the post types.
+		$no_tribe = str_replace( 'tribe_', '', $this->type );
+
+		$import_options[ $no_tribe ] = $this->get_import_label();
+
+		return $import_options;
 	}
 
 	/**
@@ -252,10 +252,7 @@ abstract class Integration {
 			return $result;
 		}
 
-		if (
-			! empty( $meta[ $this->type . '_event' ] )
-			&& ! tribe_is_event( $meta[ $this->type . '_event' ] )
-		) {
+		if ( ! empty( $meta[ $this->type . '_event' ] ) && ! tribe_is_event( $meta[ $this->type . '_event' ] ) ) {
 			return new WP_Error( 'invalid-event', __( 'Invalid ticket event selected.', 'tribe-ext-tickets-attendee-csv-importer' ) );
 		}
 

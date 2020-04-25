@@ -28,6 +28,22 @@ abstract class Importer extends File_Importer {
 	use Order_API;
 
 	/**
+	 * Event name cache.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
+	protected static $event_name_cache = [];
+	/**
+	 * Ticket name cache.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
+	protected static $ticket_name_cache = [];
+	/**
 	 * Required CSV fields.
 	 *
 	 * @since 1.0.0
@@ -39,25 +55,6 @@ abstract class Importer extends File_Importer {
 		'attendee_name',
 		'attendee_email',
 	];
-
-	/**
-	 * Event name cache.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	protected static $event_name_cache = [];
-
-	/**
-	 * Ticket name cache.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	protected static $ticket_name_cache = [];
-
 	/**
 	 * Validation row message.
 	 *
@@ -86,6 +83,16 @@ abstract class Importer extends File_Importer {
 	 */
 	public function __construct( File_Reader $file_reader, Featured_Image_Uploader $featured_image_uploader = null ) {
 		parent::__construct( $file_reader, $featured_image_uploader );
+	}
+
+	/**
+	 * Resets the static caches.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function reset_cache() {
+		self::$event_name_cache  = [];
+		self::$ticket_name_cache = [];
 	}
 
 	/**
@@ -174,39 +181,6 @@ abstract class Importer extends File_Importer {
 		}
 
 		return $attendee_id;
-	}
-
-	/**
-	 * Create an attendee for a ticket.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket        Ticket object.
-	 * @param array                          $attendee_data Attendee data.
-	 *
-	 * @return int Attendee ID.
-	 *
-	 * @throws \Exception
-	 */
-	abstract protected function create_attendee_for_ticket( $ticket, $attendee_data );
-
-	/**
-	 * Map an attendee from CSV fields.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $attendee_data CSV attendee data.
-	 *
-	 * @return array Attendee data.
-	 */
-	public function map_csv_data_to_attendee( $attendee_data ) {
-		return [
-			'full_name' => $attendee_data['attendee_name'],
-			'email'     => $attendee_data['attendee_email'],
-			'optout'    => ! tribe_is_truthy( $attendee_data['display_optin'] ),
-			'user_id'   => $attendee_data['user_id'],
-			'order_id'  => $attendee_data['order_id'],
-		];
 	}
 
 	/**
@@ -343,6 +317,39 @@ abstract class Importer extends File_Importer {
 	}
 
 	/**
+	 * Map an attendee from CSV fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $attendee_data CSV attendee data.
+	 *
+	 * @return array Attendee data.
+	 */
+	public function map_csv_data_to_attendee( $attendee_data ) {
+		return [
+			'full_name' => $attendee_data['attendee_name'],
+			'email'     => $attendee_data['attendee_email'],
+			'optout'    => ! tribe_is_truthy( $attendee_data['display_optin'] ),
+			'user_id'   => $attendee_data['user_id'],
+			'order_id'  => $attendee_data['order_id'],
+		];
+	}
+
+	/**
+	 * Create an attendee for a ticket.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket        Ticket object.
+	 * @param array                          $attendee_data Attendee data.
+	 *
+	 * @return int Attendee ID.
+	 *
+	 * @throws \Exception
+	 */
+	abstract protected function create_attendee_for_ticket( $ticket, $attendee_data );
+
+	/**
 	 * Determine if the record is valid.
 	 *
 	 * @since 1.0.0
@@ -404,15 +411,5 @@ abstract class Importer extends File_Importer {
 	 */
 	protected function get_skipped_row_message( $row ) {
 		return $this->row_message === false ? parent::get_skipped_row_message( $row ) : $this->row_message;
-	}
-
-	/**
-	 * Resets the static caches.
-	 *
-	 * @since 1.0.0
-	 */
-	public static function reset_cache() {
-		self::$event_name_cache  = [];
-		self::$ticket_name_cache = [];
 	}
 }

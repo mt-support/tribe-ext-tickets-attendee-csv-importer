@@ -8,8 +8,6 @@
 
 namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
 
-use Tribe__Tickets__Tickets;
-
 /**
  * Class Service_Provider
  *
