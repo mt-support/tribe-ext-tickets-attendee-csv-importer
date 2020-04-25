@@ -213,7 +213,6 @@ abstract class Integration {
 			'attendee_email' => esc_html__( 'Attendee Email', 'tribe-ext-tickets-attendee-csv-importer' ),
 			'display_optin'  => esc_html__( 'Opt-in Display', 'tribe-ext-tickets-attendee-csv-importer' ),
 			'user_id'        => esc_html__( 'User ID', 'tribe-ext-tickets-attendee-csv-importer' ),
-			'order_id'       => esc_html__( 'Order ID', 'tribe-ext-tickets-attendee-csv-importer' ),
 		];
 
 		/**

@@ -71,6 +71,24 @@ trait Order_API {
 
 		$order_status = strtolower( trim( $order_status ) );
 
+		/**
+		 * Allow filtering on whether to create the user if user_id value is not set. Default is on.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param boolean $create_user Whether to create the user if user_id value is not set.
+		 */
+		$create_user = (boolean) apply_filters( 'tribe_ext_tickets_attendee_csv_importer_order_api_create_user', $create_user );
+
+		/**
+		 * Allow filtering on whether to use an existing user (by email) if user_id value is not set. Default is on.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param boolean $use_existing_user Whether to use an existing user (by email) if user_id value is not set.
+		 */
+		$use_existing_user = (boolean) apply_filters( 'tribe_ext_tickets_attendee_csv_importer_order_api_use_existing_user', $use_existing_user );
+
 		$first_name = $full_name;
 		$last_name  = '';
 
@@ -186,6 +204,25 @@ trait Order_API {
 		$product_id        = $ticket->ID;
 
 		$order_status = strtolower( trim( $order_status ) );
+
+		/**
+		 * Allow filtering on whether to create the user if user_id value is not set. Default is on.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param boolean $create_user Whether to create the user if user_id value is not set.
+		 */
+		$create_user = (boolean) apply_filters( 'tribe_ext_tickets_attendee_csv_importer_order_api_create_user', $create_user );
+
+		/**
+		 * Allow filtering on whether to use an existing user (by email) if user_id value is not set. Default is on.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param boolean $use_existing_user Whether to use an existing user (by email) if user_id value is not set.
+		 */
+		$use_existing_user = (boolean) apply_filters( 'tribe_ext_tickets_attendee_csv_importer_order_api_use_existing_user', $use_existing_user );
+
 
 		$first_name = $full_name;
 		$last_name  = '';
