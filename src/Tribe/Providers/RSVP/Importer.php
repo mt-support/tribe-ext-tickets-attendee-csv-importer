@@ -23,6 +23,27 @@ use Tribe__Tickets__Ticket_Object;
 class Importer extends Importer_Base {
 
 	/**
+	 * Map an attendee from CSV fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $attendee_data CSV attendee data.
+	 *
+	 * @return array Attendee data.
+	 */
+	public function map_csv_data_to_attendee( $attendee_data ) {
+		$order_status = 'no';
+
+		if ( tribe_is_truthy( $attendee_data['going'] ) || 'going' === strtolower( $attendee_data['going'] ) ) {
+			$order_status = 'yes';
+		}
+
+		return array_merge( parent::map_csv_data_to_attendee( $attendee_data ), [
+			'order_status' => $order_status,
+		] );
+	}
+
+	/**
 	 * Get attendee data from record.
 	 *
 	 * @since 1.0.0
@@ -45,27 +66,6 @@ class Importer extends Importer_Base {
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Map an attendee from CSV fields.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $attendee_data CSV attendee data.
-	 *
-	 * @return array Attendee data.
-	 */
-	public function map_csv_data_to_attendee( $attendee_data ) {
-		$order_status = 'no';
-
-		if ( tribe_is_truthy( $attendee_data['going'] ) || 'going' === strtolower( $attendee_data['going'] ) ) {
-			$order_status = 'yes';
-		}
-
-		return array_merge( parent::map_csv_data_to_attendee( $attendee_data ), [
-			'order_status' => $order_status,
-		] );
 	}
 
 	/**

@@ -24,17 +24,6 @@ use WC_Order;
 trait Attendee_API {
 
 	/**
-	 * Generates an Order ID.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string Generated Order ID.
-	 */
-	public function generate_order_id() {
-		return md5( time() . rand() );
-	}
-
-	/**
 	 * Create an attendee for a RSVP ticket.
 	 *
 	 * @since 1.0.0
@@ -61,7 +50,7 @@ trait Attendee_API {
 			}
 
 			// Detail is empty.
-			if ( 'optout' !== $required_detail && empty( $attendee_data[ $required_detail ] ) ) {
+			if ( empty( $attendee_data[ $required_detail ] ) ) {
 				throw new Exception( sprintf( 'Attendee field "%s" is empty.', $required_detail ) );
 			}
 		}
@@ -115,11 +104,14 @@ trait Attendee_API {
 			throw new Exception( $attendee_id->get_error_message() );
 		}
 
-		update_post_meta( $attendee_id, $provider->attendee_product_key, $product_id );
-		update_post_meta( $attendee_id, $provider->attendee_event_key, $post_id );
+		// @todo This class is not setting $provider->attendee_product_key.
+		update_post_meta( $attendee_id, $provider::ATTENDEE_PRODUCT_KEY, $product_id );
+		// @todo This class is not setting $provider->attendee_event_key.
+		update_post_meta( $attendee_id, $provider::ATTENDEE_EVENT_KEY, $post_id );
 		update_post_meta( $attendee_id, $provider->security_code, $provider->generate_security_code( $attendee_id ) );
 		update_post_meta( $attendee_id, $provider->order_key, $order_id );
-		update_post_meta( $attendee_id, $provider->attendee_optout_key, (int) $optout );
+		// @todo This class is not setting $provider->attendee_optout_key.
+		update_post_meta( $attendee_id, $provider::ATTENDEE_OPTOUT_KEY, (int) $optout );
 
 		if ( 0 === $user_id ) {
 			// Check if user exists.
@@ -217,7 +209,7 @@ trait Attendee_API {
 			}
 
 			// Detail is empty.
-			if ( 'optout' !== $required_detail && empty( $attendee_data[ $required_detail ] ) ) {
+			if ( empty( $attendee_data[ $required_detail ] ) ) {
 				throw new Exception( sprintf( 'Attendee field "%s" is empty.', $required_detail ) );
 			}
 		}
@@ -355,8 +347,7 @@ trait Attendee_API {
 	 */
 	public function create_attendee_for_edd_ticket( $ticket, $attendee_data ) {
 		$required_details = [
-			'full_name',
-			'email',
+			'order_id',
 		];
 
 		foreach ( $required_details as $required_detail ) {
@@ -366,17 +357,14 @@ trait Attendee_API {
 			}
 
 			// Detail is empty.
-			if ( 'optout' !== $required_detail && empty( $attendee_data[ $required_detail ] ) ) {
+			if ( empty( $attendee_data[ $required_detail ] ) ) {
 				throw new Exception( sprintf( 'Attendee field "%s" is empty.', $required_detail ) );
 			}
 		}
 
-		$full_name         = $attendee_data['full_name'];
-		$email             = $attendee_data['email'];
 		$optout            = true;
 		$user_id           = isset( $attendee_data['user_id'] ) ? (int) $attendee_data['user_id'] : 0;
-		$order_status      = isset( $attendee_data['order_status'] ) ? $attendee_data['order_status'] : 'publish';
-		$order_id          = ! empty( $attendee_data['order_id'] ) ? (int) $attendee_data['order_id'] : 0;
+		$order_id          = (int) $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
 
@@ -387,8 +375,6 @@ trait Attendee_API {
 		if ( is_numeric( $order_id ) && 0 < $order_id && 0 === $user_id ) {
 			$user_id = get_post_meta( $order_id, '_edd_payment_user_id', true );
 		}
-
-		$order_status = strtolower( trim( $order_status ) );
 
 		/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
 		$provider = $ticket->get_provider();
@@ -427,15 +413,6 @@ trait Attendee_API {
 		update_post_meta( $attendee_id, $provider->security_code, $provider->generate_security_code( $attendee_id ) );
 		update_post_meta( $attendee_id, $provider->attendee_order_key, $order_id );
 		update_post_meta( $attendee_id, $provider->attendee_optout_key, (int) $optout );
-
-		if ( 0 === $user_id && $email ) {
-			// Check if user exists.
-			$user = get_user_by( 'email', $email );
-
-			if ( $user ) {
-				$user_id = $user->ID;
-			}
-		}
 
 		if ( 0 < $user_id ) {
 			update_post_meta( $attendee_id, $provider->attendee_user_id, $user_id );
@@ -487,8 +464,7 @@ trait Attendee_API {
 	 */
 	public function create_attendee_for_woo_ticket( $ticket, $attendee_data ) {
 		$required_details = [
-			'full_name',
-			'email',
+			'order_id',
 		];
 
 		foreach ( $required_details as $required_detail ) {
@@ -498,17 +474,14 @@ trait Attendee_API {
 			}
 
 			// Detail is empty.
-			if ( 'optout' !== $required_detail && empty( $attendee_data[ $required_detail ] ) ) {
+			if ( empty( $attendee_data[ $required_detail ] ) ) {
 				throw new Exception( sprintf( 'Attendee field "%s" is empty.', $required_detail ) );
 			}
 		}
 
-		$full_name         = $attendee_data['full_name'];
-		$email             = $attendee_data['email'];
 		$optout            = true;
 		$user_id           = isset( $attendee_data['user_id'] ) ? (int) $attendee_data['user_id'] : 0;
-		$order_status      = isset( $attendee_data['order_status'] ) ? $attendee_data['order_status'] : 'publish';
-		$order_id          = ! empty( $attendee_data['order_id'] ) ? (int) $attendee_data['order_id'] : 0;
+		$order_id          = (int) $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
 		$order_item_id     = isset( $attendee_data['order_item_id'] ) ? $attendee_data['order_item_id'] : null;
@@ -532,8 +505,6 @@ trait Attendee_API {
 				}
 			}
 		}
-
-		$order_status = strtolower( trim( $order_status ) );
 
 		/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
 		$provider = $ticket->get_provider();
@@ -572,15 +543,6 @@ trait Attendee_API {
 		update_post_meta( $attendee_id, $provider->security_code, $provider->generate_security_code( $attendee_id ) );
 		update_post_meta( $attendee_id, $provider->attendee_order_key, $order_id );
 		update_post_meta( $attendee_id, $provider->attendee_optout_key, (int) $optout );
-
-		if ( 0 === $user_id && $email ) {
-			// Check if user exists.
-			$user = get_user_by( 'email', $email );
-
-			if ( $user ) {
-				$user_id = $user->ID;
-			}
-		}
 
 		if ( 0 < $user_id ) {
 			update_post_meta( $attendee_id, $provider->attendee_user_id, $user_id );

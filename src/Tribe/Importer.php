@@ -25,6 +25,7 @@ use Tribe__Tickets__Tickets;
 abstract class Importer extends File_Importer {
 
 	use Attendee_API;
+	use Order_API;
 
 	/**
 	 * Required CSV fields.
@@ -85,8 +86,6 @@ abstract class Importer extends File_Importer {
 	 */
 	public function __construct( File_Reader $file_reader, Featured_Image_Uploader $featured_image_uploader = null ) {
 		parent::__construct( $file_reader, $featured_image_uploader );
-
-		add_action( 'tribe_aggregator_record_activity_wakeup', [ $this, 'register_post_type_activity' ] );
 	}
 
 	/**
@@ -405,20 +404,6 @@ abstract class Importer extends File_Importer {
 	 */
 	protected function get_skipped_row_message( $row ) {
 		return $this->row_message === false ? parent::get_skipped_row_message( $row ) : $this->row_message;
-	}
-
-	/**
-	 * Registers the post types for tracking activity.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \Tribe__Events__Aggregator__Record__Activity $activity Activity object.
-	 */
-	public function register_post_type_activity( $activity ) {
-		// EA removes "tribe_" from the post types.
-		$no_tribe = str_replace( 'tribe_', '', $this->integration->type );
-
-		$activity->register( $this->integration->type, [ $no_tribe ] );
 	}
 
 	/**

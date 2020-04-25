@@ -28,7 +28,7 @@ class Importer extends Importer_Base {
 	 * @since 1.0.0
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket object.
-	 * @param array                          $attendee_data Attendee data.
+	 * @param array                         $attendee_data Attendee data.
 	 *
 	 * @return int Attendee ID.
 	 *

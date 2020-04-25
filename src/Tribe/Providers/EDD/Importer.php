@@ -28,13 +28,17 @@ class Importer extends Importer_Base {
 	 * @since 1.0.0
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket        Ticket object.
-	 * @param array                          $attendee_data Attendee data.
+	 * @param array                         $attendee_data Attendee data.
 	 *
 	 * @return int Attendee ID.
 	 *
 	 * @throws Exception
 	 */
 	protected function create_attendee_for_ticket( $ticket, $attendee_data ) {
+		$order_id = $this->create_order_for_edd_ticket( $ticket, $attendee_data );
+
+		$attendee_data['order_id'] = $order_id;
+
 		return $this->create_attendee_for_edd_ticket( $ticket, $attendee_data );
 	}
 }

@@ -79,6 +79,7 @@ abstract class Integration {
 
 		// Importer handler.
 		add_filter( "tribe_events_import_{$no_tribe}_importer", [ $this, 'get_importer' ], 10, 2 );
+		add_action( 'tribe_aggregator_record_activity_wakeup', [ $this, 'register_post_type_activity' ] );
 
 		// Import UI.
 		add_filter( 'tribe_aggregator_csv_post_types', [ $this, 'add_csv_post_type' ], 11 );
@@ -386,6 +387,20 @@ abstract class Integration {
 		$this->template->set_template_context_extract( true );
 
 		return $this->template;
+	}
+
+	/**
+	 * Registers the post types for tracking activity.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \Tribe__Events__Aggregator__Record__Activity $activity Activity object.
+	 */
+	public function register_post_type_activity( $activity ) {
+		// EA removes "tribe_" from the post types.
+		$no_tribe = str_replace( 'tribe_', '', $this->type );
+
+		$activity->register( $this->type, [ $no_tribe ] );
 	}
 
 }
