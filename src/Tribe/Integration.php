@@ -139,7 +139,7 @@ abstract class Integration {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return null|WP_Post_Type The post type or null if it does not exist.
+	 * @return null|\WP_Post_Type The post type or null if it does not exist.
 	 */
 	public function get_post_type_object() {
 		$post_type_obj = get_post_type_object( $this->type );
@@ -330,9 +330,6 @@ abstract class Integration {
 
 		// @todo ET needs to extend and add another filter has_tickets_or_rsvp.
 
-		/**
-		 * @var \wpdb $wpdb
-		 */
 		global $wpdb;
 
 		$events_orm->join_clause( "

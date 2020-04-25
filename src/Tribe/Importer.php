@@ -74,18 +74,6 @@ abstract class Importer extends File_Importer {
 	protected $integration;
 
 	/**
-	 * Importer constructor.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param File_Reader                  $file_reader             File reader object.
-	 * @param Featured_Image_Uploader|null $featured_image_uploader Featured image uploader object.
-	 */
-	public function __construct( File_Reader $file_reader, Featured_Image_Uploader $featured_image_uploader = null ) {
-		parent::__construct( $file_reader, $featured_image_uploader );
-	}
-
-	/**
 	 * Resets the static caches.
 	 *
 	 * @since 1.0.0
@@ -190,7 +178,7 @@ abstract class Importer extends File_Importer {
 	 *
 	 * @param array $record Import record.
 	 *
-	 * @return bool|WP_Post Event post object or false if not found.
+	 * @return bool|\WP_Post Event post object or false if not found.
 	 */
 	protected function get_event_from( array $record ) {
 		$event_name = $this->get_value_by_key( $record, 'event_name' );
@@ -381,7 +369,7 @@ abstract class Importer extends File_Importer {
 
 		$provider = $ticket->get_provider();
 
-		if ( empty( $provider ) || $this->integration->type !== $provider->attendee_object ) {
+		if ( null === $provider || $this->integration->type !== $provider->attendee_object ) {
 			return false;
 		}
 
@@ -405,7 +393,7 @@ abstract class Importer extends File_Importer {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $row Row data.
+	 * @param array $row Row data.
 	 *
 	 * @return string Skipped row message.
 	 */

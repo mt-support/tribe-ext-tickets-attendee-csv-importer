@@ -28,7 +28,7 @@ trait Order_API {
 	 * @return string Generated Order ID.
 	 */
 	public function generate_order_id() {
-		return md5( time() . rand() );
+		return md5( time() . mt_rand() );
 	}
 
 	/**

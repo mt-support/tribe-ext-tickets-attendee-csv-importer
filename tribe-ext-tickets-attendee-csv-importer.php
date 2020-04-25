@@ -44,32 +44,56 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 	class Main extends Tribe__Extension {
 
 		/**
+		 * Version string.
+		 *
+		 * @since 1.0.0
+		 *
 		 * @var string
 		 */
 		const VERSION = '1.0.0';
 
 		/**
+		 * File path.
+		 *
+		 * @since 1.0.0
+		 *
 		 * @var string
 		 */
 		const PATH = __DIR__;
 
 		/**
+		 * Class loader.
+		 *
+		 * @since 1.0.0
+		 *
 		 * @var Tribe__Autoloader
 		 */
 		private $class_loader;
 
 		/**
-		 * @var Plugin Directory
+		 * Plugin Directory.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var string
 		 */
 		public $plugin_dir;
 
 		/**
-		 * @var Plugin path
+		 * Plugin path.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var string
 		 */
 		public $plugin_path;
 
 		/**
-		 * @var Plugin URL
+		 * Plugin URL.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var string
 		 */
 		public $plugin_url;
 
@@ -101,7 +125,7 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 		 */
 		public function init() {
 			// Load plugin textdomain
-			load_plugin_textdomain( 'tribe-ext-tickets-attendee-csv-importer', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+			load_plugin_textdomain( 'tribe-ext-tickets-attendee-csv-importer', false, basename( __DIR__ ) . '/languages/' );
 
 			if ( ! $this->php_version_check() ) {
 				return;

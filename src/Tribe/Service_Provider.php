@@ -8,13 +8,15 @@
 
 namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
 
+use tad_DI52_ServiceProvider;
+
 /**
  * Class Service_Provider
  *
  * @since   1.0.0
  * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
  */
-class Service_Provider extends \tad_DI52_ServiceProvider {
+class Service_Provider extends tad_DI52_ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.
