@@ -4,21 +4,21 @@
  *
  * @since   1.0.0
  *
- * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
+ * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer\API
  */
 
-namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
+namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer\API;
 
 use Exception;
 
 /**
- * Class Order_API
+ * Class Order
  *
  * @since   1.0.0
  *
- * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
+ * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer\API
  */
-trait Order_API {
+trait Order {
 
 	/**
 	 * Generates an Order ID.

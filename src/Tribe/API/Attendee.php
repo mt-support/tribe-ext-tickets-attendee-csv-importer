@@ -1,27 +1,30 @@
 <?php
 /**
- * Handles all of the EA Importer integration.
+ * Handles all of the Attendee API functionality.
  *
  * @since   1.0.0
  *
- * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
+ * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer\API
  */
 
-namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
+namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer\API;
 
 use Exception;
+use Tribe\Extensions\Tickets\Attendee_CSV_Importer\API\Attendee\Email;
 use Tribe__Tickets__Commerce__PayPal__Stati;
 use Tribe__Tickets__Global_Stock;
 use WC_Order;
 
 /**
- * Class Attendee_API
+ * Class Attendee
  *
  * @since   1.0.0
  *
- * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
+ * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer\API
  */
-trait Attendee_API {
+trait Attendee {
+
+	use Email;
 
 	/**
 	 * Create an attendee for a RSVP ticket.
@@ -63,6 +66,7 @@ trait Attendee_API {
 		$order_id          = ! empty( $attendee_data['order_id'] ) ? $attendee_data['order_id'] : $this->generate_order_id();
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
+		$send_email        = isset( $attendee_data['send_email'] ) ? tribe_is_truthy( $attendee_data['send_email'] ) : true;
 
 		if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
@@ -181,6 +185,10 @@ trait Attendee_API {
 
 		$provider->clear_attendees_cache( $post_id );
 
+		if ( $send_email ) {
+			$this->send_email_for_rsvp_ticket( $order_id, $post_id, $order_status, $provider );
+		}
+
 		return $attendee_id;
 	}
 
@@ -222,6 +230,7 @@ trait Attendee_API {
 		$order_id          = ! empty( $attendee_data['order_id'] ) ? $attendee_data['order_id'] : $this->generate_order_id();
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
+		$send_email        = isset( $attendee_data['send_email'] ) ? tribe_is_truthy( $attendee_data['send_email'] ) : true;
 
 		if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
@@ -330,6 +339,10 @@ trait Attendee_API {
 
 		$provider->clear_attendees_cache( $post_id );
 
+		if ( $send_email ) {
+			$this->send_email_for_paypal_ticket( $order_id, $post_id, $order_status, $provider );
+		}
+
 		return $attendee_id;
 	}
 
@@ -367,6 +380,7 @@ trait Attendee_API {
 		$order_id          = (int) $attendee_data['order_id'];
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
+		$send_email        = isset( $attendee_data['send_email'] ) ? tribe_is_truthy( $attendee_data['send_email'] ) : true;
 
 		if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
@@ -447,6 +461,10 @@ trait Attendee_API {
 
 		$provider->clear_attendees_cache( $post_id );
 
+		if ( $send_email ) {
+			$this->send_email_for_edd_ticket( $order_id, $post_id, $provider );
+		}
+
 		return $attendee_id;
 	}
 
@@ -485,6 +503,7 @@ trait Attendee_API {
 		$product_id        = $ticket->ID;
 		$order_attendee_id = isset( $attendee_data['order_attendee_id'] ) ? $attendee_data['order_attendee_id'] : null;
 		$order_item_id     = isset( $attendee_data['order_item_id'] ) ? $attendee_data['order_item_id'] : null;
+		$send_email        = isset( $attendee_data['send_email'] ) ? tribe_is_truthy( $attendee_data['send_email'] ) : true;
 
 		if ( isset( $attendee_data['optout'] ) && '' !== $attendee_data['optout'] ) {
 			$optout = tribe_is_truthy( $attendee_data['optout'] );
@@ -593,6 +612,10 @@ trait Attendee_API {
 		update_post_meta( $order_id, $provider->order_has_tickets, '1' );
 
 		$provider->clear_attendees_cache( $post_id );
+
+		if ( $send_email ) {
+			$this->send_email_for_woo_ticket( $order_id, $post_id, $provider );
+		}
 
 		return $attendee_id;
 	}

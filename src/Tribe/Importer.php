@@ -10,9 +10,9 @@
 namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
 
 use Exception;
-use Tribe__Events__Importer__Featured_Image_Uploader as Featured_Image_Uploader;
+use Tribe\Extensions\Tickets\Attendee_CSV_Importer\API\Attendee;
+use Tribe\Extensions\Tickets\Attendee_CSV_Importer\API\Order;
 use Tribe__Events__Importer__File_Importer as File_Importer;
-use Tribe__Events__Importer__File_Reader as File_Reader;
 use Tribe__Tickets__Tickets;
 
 /**
@@ -24,8 +24,8 @@ use Tribe__Tickets__Tickets;
  */
 abstract class Importer extends File_Importer {
 
-	use Attendee_API;
-	use Order_API;
+	use Attendee;
+	use Order;
 
 	/**
 	 * Event name cache.
@@ -286,6 +286,7 @@ abstract class Importer extends File_Importer {
 			'display_optin'  => $this->get_value_by_key( $record, 'display_optin' ),
 			'user_id'        => (int) $this->get_value_by_key( $record, 'user_id' ),
 			'order_id'       => $this->get_value_by_key( $record, 'order_id' ),
+			'send_email'     => $this->will_send_email( $record ),
 		];
 
 		if ( '' === $data['order_id'] ) {
@@ -315,11 +316,12 @@ abstract class Importer extends File_Importer {
 	 */
 	public function map_csv_data_to_attendee( $attendee_data ) {
 		return [
-			'full_name' => $attendee_data['attendee_name'],
-			'email'     => $attendee_data['attendee_email'],
-			'optout'    => ! tribe_is_truthy( $attendee_data['display_optin'] ),
-			'user_id'   => $attendee_data['user_id'],
-			'order_id'  => $attendee_data['order_id'],
+			'full_name'  => $attendee_data['attendee_name'],
+			'email'      => $attendee_data['attendee_email'],
+			'optout'     => ! tribe_is_truthy( $attendee_data['display_optin'] ),
+			'user_id'    => $attendee_data['user_id'],
+			'order_id'   => $attendee_data['order_id'],
+			'send_email' => $attendee_data['send_email'],
 		];
 	}
 
@@ -336,6 +338,31 @@ abstract class Importer extends File_Importer {
 	 * @throws \Exception
 	 */
 	abstract protected function create_attendee_for_ticket( $ticket, $attendee_data );
+
+	/**
+	 * Determine whether to send emails for the imported attendees.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $record Import record.
+	 *
+	 * @return bool Whether to send emails for the imported attendees.
+	 */
+	public function will_send_email( array $record = [] ) {
+		static $send_email;
+
+		if ( null !== $send_email ) {
+			return $send_email;
+		}
+
+		$send_email = $this->get_value_by_key( $record. 'send_email' );
+
+		if ( '' === $send_email && isset( $this->aggregator_record->meta[ $this->integration->type . '_send_email' ] ) ) {
+			$send_email = tribe_is_truthy( $this->aggregator_record->meta[ $this->integration->type . '_send_email' ] );
+		}
+
+		return tribe_is_truthy( $send_email );
+	}
 
 	/**
 	 * Determine if the record is valid.
