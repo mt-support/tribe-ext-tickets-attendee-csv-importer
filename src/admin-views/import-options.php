@@ -33,3 +33,24 @@
 			data-width-rule="all-triggers"></span>
 	</td>
 </tr>
+
+<tr class="tribe-dependent" data-depends="#tribe-ea-field-csv_content_type" data-condition="<?php echo esc_attr( $provider ); ?>">
+	<th scope="row">
+		<label for="tribe-ea-field-csv_<?php echo esc_attr( $provider ); ?>_send_email">
+			<?php esc_html_e( 'Emails', 'tribe-ext-tickets-attendee-csv-importer' ); ?>
+		</label>
+	</th>
+	<td>
+		<label for="tribe-ea-field-csv_<?php echo esc_attr( $provider ); ?>_send_email">
+			<input
+				name="aggregator[csv][<?php echo esc_attr( $provider ); ?>_send_email]"
+				id="tribe-ea-field-csv_<?php echo esc_attr( $provider ); ?>_send_email"
+				class="tribe-ea-field tribe-ea-field-csv_<?php echo esc_attr( $provider ); ?>_send_email"
+				value="1"
+				type="checkbox"
+				checked
+			 />
+			<?php esc_html_e( 'Send attendee emails', 'tribe-ext-tickets-attendee-csv-importer' ); ?>
+		</label>
+	</td>
+</tr>

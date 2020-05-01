@@ -286,6 +286,12 @@ abstract class Integration {
 			$meta[ $this->type . '_event' ] = (int) $data[ $this->type . '_event' ];
 		}
 
+		$meta[ $this->type . '_send_email' ] = 0;
+
+		if ( ! empty( $data[ $this->type . '_send_email' ] ) ) {
+			$meta[ $this->type . '_send_email' ] = (int) $data[ $this->type . '_send_email' ];
+		}
+
 		return $meta;
 	}
 
@@ -305,6 +311,8 @@ abstract class Integration {
 		if ( empty( $data['csv']['content_type'] ) || $this->type !== $data['csv']['content_type'] ) {
 			return;
 		}
+
+		$record->update_meta( $this->type . '_send_email', (int) $data['csv'][ $this->type . '_send_email' ] );
 
 		if ( empty( $data['csv'][ $this->type . '_event' ] ) ) {
 			$record->delete_meta( $this->type . '_event' );
