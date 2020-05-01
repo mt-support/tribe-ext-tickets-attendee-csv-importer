@@ -13,7 +13,7 @@ Enable importing of Attendees from CSV to Event Tickets.
 
 == Description ==
 
-This extension will allow you to import Attendees from CSV to Event Tickets for a number of different ticket types. This requires both Event Tickets and The Events Calendar to be active.
+This extension will allow you to import Attendees from CSV to Event Tickets for a number of different ticket types. This requires Event Tickets, Event Tickets Plus, and The Events Calendar to be active.
 
 == Installation ==
 

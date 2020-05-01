@@ -117,6 +117,7 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 			 * If using `tribe()`, such as with `Tribe__Dependency`, require TEC/ET version 4.4+ (January 9, 2017).
 			 */
 			$this->add_required_plugin( 'Tribe__Tickets__Main', '4.12' );
+			$this->add_required_plugin( 'Tribe__Tickets_Plus__Main', '4.12' );
 			$this->add_required_plugin( 'Tribe__Events__Main', '4.12' );
 		}
 
