@@ -12,6 +12,8 @@ namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
 use Tribe__Events__Importer__File_Importer as File_Importer;
 use Tribe__Events__Importer__File_Reader as File_Reader;
 use Tribe__Template as Template;
+use Tribe__Tickets__Main;
+use WP_Post;
 use WP_Error;
 
 /**
@@ -94,6 +96,9 @@ abstract class Integration {
 		// Column mapping.
 		add_filter( 'tribe_aggregator_csv_column_mapping', [ $this, 'set_columns' ] );
 		add_filter( "tribe_event_import_{$no_tribe}_column_names", [ $this, 'set_column_names' ] );
+
+		// History data.
+		add_filter( 'tribe_aggregator_manage_record_column_source_html', [ $this, 'customize_history_source' ], 10, 2 );
 
 		// @todo JS to hide.
 		/**
@@ -251,7 +256,7 @@ abstract class Integration {
 			return $result;
 		}
 
-		if ( ! empty( $meta[ $this->type . '_event' ] ) && ! tribe_is_event( $meta[ $this->type . '_event' ] ) ) {
+		if ( ! empty( $meta[ $this->type . '_event' ] ) && ! get_post( $meta[ $this->type . '_event' ] ) instanceof WP_Post ) {
 			return new WP_Error( 'invalid-event', __( 'Invalid ticket event selected.', 'tribe-ext-tickets-attendee-csv-importer' ) );
 		}
 
@@ -331,7 +336,17 @@ abstract class Integration {
 	public function render_options() {
 		$help = __( 'Select an Event to use for importing attendees to. If an event is provided, it will be used instead of any event passed through the CSV.', 'tribe-ext-tickets-attendee-csv-importer' );
 
-		$events_orm = tribe_events();
+		/** @var Post_Repository $posts_orm */
+		$posts_orm = tribe( 'ext.tickets.attendee-csv-importer.repository.post' );
+
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+
+		$posts_orm->where( 'post_type', $post_types );
+		$posts_orm->where( 'post_status', [
+			'publish',
+			'private',
+			'draft',
+		] );
 
 		// Only include events that have tickets.
 
@@ -339,25 +354,25 @@ abstract class Integration {
 
 		global $wpdb;
 
-		$events_orm->join_clause( "
+		$posts_orm->join_clause( "
 			JOIN `{$wpdb->postmeta}` `has_tickets_or_rsvp_ticket_event`
 				ON `has_tickets_or_rsvp_ticket_event`.`meta_value` = `{$wpdb->posts}`.`ID`
 		" );
 
 		// @todo ET needs to check specific meta keys, it's not right now and that could return unexpected values.
-		$events_orm->where_clause( $wpdb->prepare( '
+		$posts_orm->where_clause( $wpdb->prepare( '
 			`has_tickets_or_rsvp_ticket_event`.`meta_key` = %s
 		', $this->event_meta_key ) );
 
 		// Show the most recent events.
-		$events_orm->order( 'date' );
-		$events_orm->order_by( 'desc' );
+		$posts_orm->order( 'date' );
+		$posts_orm->order_by( 'desc' );
 
 		// Show only 100 events.
-		$events_orm->per_page( 100 );
+		$posts_orm->per_page( 100 );
 
 		// Get list of events in ID => Title array format.
-		$events = $events_orm->all();
+		$events = $posts_orm->all();
 		$events = wp_list_pluck( $events, 'post_title', 'ID' );
 
 		$this->get_template()->template( 'import-options', [
@@ -402,6 +417,108 @@ abstract class Integration {
 		$no_tribe = str_replace( 'tribe_', '', $this->type );
 
 		$activity->register( $this->type, [ $no_tribe ] );
+	}
+
+	/**
+	 * Customize the Events > Import > History > Source column text.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array                                        $html   List of HTML details.
+	 * @param \Tribe__Events__Aggregator__Record__Abstract $record The record object.
+	 *
+	 * @return array List of HTML details.
+	 */
+	public function customize_history_source( array $html, $record ) {
+		if ( 'csv' !== $record->origin ) {
+			return $html;
+		}
+
+		$meta = $record->meta;
+
+		if ( empty( $meta['content_type'] ) || $this->type !== $meta['content_type'] ) {
+			return $html;
+		}
+
+		$fields  = [];
+		$filters = [];
+
+		// Add fields.
+		$fields[] = [
+			'label' => __( 'Content Type', 'tribe-ext-tickets-attendee-csv-importer' ),
+			'value' => $this->get_import_label(),
+		];
+
+		$send_email = false;
+
+		if ( ! empty( $meta[ $this->type . '_send_email' ] ) ) {
+			$send_email = tribe_is_truthy( $meta[ $this->type . '_send_email' ] );
+		}
+
+		$fields[] = [
+			'label' => __( 'Send Attendee Emails', 'tribe-ext-tickets-attendee-csv-importer' ),
+			'value' => $send_email ? 'Yes' : 'No',
+		];
+
+		// Add filters.
+		if ( ! empty( $meta[ $this->type . '_event' ] ) ) {
+			$event = get_post( $meta[ $this->type . '_event' ] );
+
+			$event_title = 'No longer exists';
+
+			if ( $event instanceof WP_Post ){
+				$event_title = sprintf(
+					'<a href="%1$s">%2$s</a>',
+					esc_url( get_edit_post_link( $event ) ),
+					get_the_title( $event )
+				);
+			}
+
+			$filters[] = [
+				'label' => __( 'Event', 'tribe-ext-tickets-attendee-csv-importer' ),
+				'value' => $event_title,
+			];
+		}
+
+		// Do all of the HTML building now.
+		foreach ( $fields as $field ) {
+			$html[] = sprintf(
+				'
+					<strong>%1$s:</strong> %2$s<br />
+				',
+				esc_html( $field['label'] ),
+				wp_kses_post( $field['value'] )
+			);
+		}
+
+		$html[] = '</dl>';
+
+		// Check if we need to output filters.
+		if ( empty( $filters ) ) {
+			return $html;
+		}
+
+		$html[] = '<div class="tribe-view-filters-container">';
+		$html[] = sprintf(
+			'<a href="" class="tribe-view-filters">%s</a>',
+			esc_html__( 'View Attendee Filters', 'the-events-calendar' )
+		);
+		$html[] = '<dl class="tribe-filters">';
+
+		foreach ( $filters as $filter ) {
+			$html[] = sprintf(
+				'
+					<dt>%1$s:</dt>
+					<dd>%2$s</dd>
+				',
+				esc_html( $filter['label'] ),
+				wp_kses_post( $filter['value'] )
+			);
+		}
+
+		$html[] = '</dl></div>';
+
+		return $html;
 	}
 
 }

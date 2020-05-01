@@ -13,6 +13,7 @@ use Exception;
 use Tribe\Extensions\Tickets\Attendee_CSV_Importer\API\Attendee;
 use Tribe\Extensions\Tickets\Attendee_CSV_Importer\API\Order;
 use Tribe__Events__Importer__File_Importer as File_Importer;
+use Tribe__Tickets__Main;
 use Tribe__Tickets__Tickets;
 
 /**
@@ -194,16 +195,25 @@ abstract class Importer extends File_Importer {
 		}
 
 		try {
-			$events_orm = tribe_events();
+			/** @var Post_Repository $posts_orm */
+			$posts_orm = tribe( 'ext.tickets.attendee-csv-importer.repository.post' );
 
-			$events_orm->where_multi( [
+			$post_types = Tribe__Tickets__Main::instance()->post_types();
+
+			$posts_orm->where( 'post_type', $post_types );
+			$posts_orm->where( 'post_status', [
+				'publish',
+				'private',
+				'draft',
+			] );
+			$posts_orm->where_multi( [
 				'ID',
 				'post_title',
 				'post_name',
 			], '=', $event_name );
-			$events_orm->per_page( 1 );
+			$posts_orm->per_page( 1 );
 
-			$event = $events_orm->first();
+			$event = $posts_orm->first();
 
 			if ( empty( $event ) ) {
 				$event = false;
@@ -355,7 +365,7 @@ abstract class Importer extends File_Importer {
 			return $send_email;
 		}
 
-		$send_email = $this->get_value_by_key( $record. 'send_email' );
+		$send_email = $this->get_value_by_key( $record, 'send_email' );
 
 		if ( '' === $send_email && isset( $this->aggregator_record->meta[ $this->integration->type . '_send_email' ] ) ) {
 			$send_email = tribe_is_truthy( $this->aggregator_record->meta[ $this->integration->type . '_send_email' ] );

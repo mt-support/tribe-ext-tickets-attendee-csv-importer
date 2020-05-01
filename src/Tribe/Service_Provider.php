@@ -28,6 +28,10 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'ext.tickets.attendee-csv-importer', $this );
 		$this->container->singleton( static::class, $this );
 
+		// Register the post repository on the container.
+		$this->container->bind( 'ext.tickets.attendee-csv-importer.repository.post', Post_Repository::class );
+		$this->container->bind( Post_Repository::class, Post_Repository::class );
+
 		// Register RSVP integration.
 		$rsvp_integration = new Providers\RSVP\Integration( $this->container );
 		$this->container->singleton( Providers\RSVP\Integration::class, $rsvp_integration );

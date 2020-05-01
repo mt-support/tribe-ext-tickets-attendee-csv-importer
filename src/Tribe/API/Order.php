@@ -154,6 +154,10 @@ trait Order {
 			],
 		];
 
+		// Remove certain actions to ensure they don't fire when creating the payments
+		remove_action( 'edd_complete_purchase', 'edd_trigger_purchase_receipt', 999 );
+		remove_action( 'edd_admin_sale_notice', 'edd_admin_email_notice', 10 );
+
 		// Record the pending payment.
 		$order_id = edd_insert_payment( $payment_data );
 
@@ -178,6 +182,13 @@ trait Order {
 	 * @throws Exception
 	 */
 	public function create_order_for_woo_ticket( $ticket, $order_data ) {
+		// Prevent WC emails.
+		add_filter( 'woocommerce_email_enabled_new_order', '__return_false' );
+		add_filter( 'woocommerce_email_enabled_customer_completed_order', '__return_false' );
+
+		// Disable normal attendee generation.
+		remove_action( 'woocommerce_order_status_changed', [ $ticket->get_provider(), 'delayed_ticket_generation' ], 12 );
+
 		$required_details = [
 			'full_name',
 			'email',
@@ -284,6 +295,8 @@ trait Order {
 
 		// Calculate totals
 		$order->calculate_totals();
+
+		// Update status.
 		$order->update_status( $order_status, 'Order created dynamically from EA Attendee Import', true );
 
 		return $order->get_id();
