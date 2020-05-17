@@ -3,7 +3,7 @@
  * Plugin Name:       Event Tickets Extension: Attendee CSV Importer
  * Plugin URI:        https://theeventscalendar.com/extensions/---the-extension-article-url---/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-tickets-attendee-csv-importer
- * Description:       [Extension Description]
+ * Description:       Enable importing of Attendees from CSV to Event Tickets.
  * Version:           1.0.0
  * Extension Class:   Tribe\Extensions\Tickets\Attendee_CSV_Importer\Main
  * Author:            Modern Tribe, Inc.
