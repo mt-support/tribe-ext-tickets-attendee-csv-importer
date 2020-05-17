@@ -293,7 +293,7 @@ abstract class Importer extends File_Importer {
 		$data = [
 			'attendee_name'  => $this->get_value_by_key( $record, 'attendee_name' ),
 			'attendee_email' => $this->get_value_by_key( $record, 'attendee_email' ),
-			'display_optin'  => $this->get_value_by_key( $record, 'display_optin' ),
+			'display_opt_in' => $this->get_value_by_key( $record, 'display_opt_in' ),
 			'user_id'        => (int) $this->get_value_by_key( $record, 'user_id' ),
 			'order_id'       => $this->get_value_by_key( $record, 'order_id' ),
 			'send_email'     => $this->will_send_email( $record ),
@@ -304,12 +304,12 @@ abstract class Importer extends File_Importer {
 			$data['order_id'] = null;
 		}
 
-		if ( '' === $data['display_optin'] ) {
+		if ( '' === $data['display_opt_in'] ) {
 			// Set default.
-			$data['display_optin'] = false;
+			$data['display_opt_in'] = false;
 		} else {
 			// Enforce boolean.
-			$data['display_optin'] = tribe_is_truthy( $data['display_optin'] );
+			$data['display_opt_in'] = tribe_is_truthy( $data['display_opt_in'] );
 		}
 
 		return $data;
@@ -328,7 +328,7 @@ abstract class Importer extends File_Importer {
 		return [
 			'full_name'  => $attendee_data['attendee_name'],
 			'email'      => $attendee_data['attendee_email'],
-			'optout'     => ! tribe_is_truthy( $attendee_data['display_optin'] ),
+			'optout'     => ! tribe_is_truthy( $attendee_data['display_opt_in'] ),
 			'user_id'    => $attendee_data['user_id'],
 			'order_id'   => $attendee_data['order_id'],
 			'send_email' => $attendee_data['send_email'],
