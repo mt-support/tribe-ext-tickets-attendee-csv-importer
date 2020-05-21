@@ -216,7 +216,7 @@ abstract class Integration {
 			'ticket_name'    => esc_html__( 'Ticket Name or ID', 'tribe-ext-tickets-attendee-csv-importer' ),
 			'attendee_name'  => esc_html__( 'Attendee Name', 'tribe-ext-tickets-attendee-csv-importer' ),
 			'attendee_email' => esc_html__( 'Attendee Email', 'tribe-ext-tickets-attendee-csv-importer' ),
-			'display_opt_in' => esc_html__( 'Opt-in Display', 'tribe-ext-tickets-attendee-csv-importer' ),
+			'display_opt_in' => esc_html__( 'Display Opt-In', 'tribe-ext-tickets-attendee-csv-importer' ),
 			'user_id'        => esc_html__( 'User ID', 'tribe-ext-tickets-attendee-csv-importer' ),
 		];
 
