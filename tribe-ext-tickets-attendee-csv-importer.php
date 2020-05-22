@@ -118,7 +118,7 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 			 */
 			$this->add_required_plugin( 'Tribe__Tickets__Main', '4.12' );
 			$this->add_required_plugin( 'Tribe__Tickets_Plus__Main', '4.12' );
-			$this->add_required_plugin( 'Tribe__Events__Main', '4.12' );
+			$this->add_required_plugin( 'Tribe__Events__Main', '5.1' );
 		}
 
 		/**

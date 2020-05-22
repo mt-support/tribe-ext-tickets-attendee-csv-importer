@@ -1,6 +1,6 @@
 ## What and Why?
 
-This is an extension to allow importing of Attendees from CSV to Event Tickets. This requires Event Tickets, Event Tickets Plus, and The Events Calendar to be active.
+This is an extension to allow importing of Attendees from CSV to Event Tickets. This requires Event Tickets (4.12+), Event Tickets Plus (4.12+), and The Events Calendar (5.1+) to be active.
  
 ## How?
 
