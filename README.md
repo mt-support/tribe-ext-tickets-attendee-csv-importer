@@ -19,6 +19,6 @@ The Attendees import option shown will depend on whether you have the associated
 * `ticket_name` - Ticket Name or ID (**required**).
 * `attendee_name` - Attendee Name (**required**).
 * `attendee_email` - Attendee Email (**required**).
-* `display_opt_in` - Opt-in Display (default: `0`). This can be any of the following values: `0`, `1`, `off`, `on`, `no`, `yes`
-* `going` - Going or Not Going (default: `yes`). This is only used for the RSVP Attendees import. This can be any of the following values: `0`, `1`, `off`, `on`, `no`, `yes`, `going`
+* `display_opt_in` - Opt-in Display (default: `0`). This can be any of the following values: `0`, `1`, `off`, `on`, `no`, `yes`, `n`, `y`
+* `going` - Going or Not Going (default: `yes`). This is only used for the RSVP Attendees import. This can be any of the following values: `0`, `1`, `off`, `on`, `no`, `yes`, `n`, `y`, `going`
 * `user_id` - User ID (default: `0`). This value should be an integer.
