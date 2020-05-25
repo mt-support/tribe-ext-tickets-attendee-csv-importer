@@ -123,7 +123,8 @@ trait Order {
 		}
 
 		$payment_data = [
-			'price'        => $ticket->price,
+			'price'        => 0,
+			//'price'        => $ticket->price,
 			'date'         => date( 'Y-m-d H:i:s' ),
 			'user_email'   => $email,
 			'purchase_key' => uniqid( 'edd-ticket-', true ),
@@ -147,7 +148,8 @@ trait Order {
 					'quantity'   => 1,
 					'price_id'   => null,
 					'tax'        => 0,
-					'item_price' => $ticket->price,
+					'item_price' => 0,
+					//'item_price' => $ticket->price,
 					'fees'       => [],
 					'discount'   => 0,
 				],
@@ -294,6 +296,9 @@ trait Order {
 
 		// Calculate totals
 		$order->calculate_totals();
+
+		// @todo Set as zero dollar order.
+		//$order->
 
 		// Update status.
 		$order->update_status( $order_status, 'Order created dynamically from EA Attendee Import', true );

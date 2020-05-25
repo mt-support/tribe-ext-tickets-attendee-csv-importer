@@ -294,7 +294,8 @@ trait Attendee {
 		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_currency_symbol( $product_id, true );
 
-		update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
+		update_post_meta( $attendee_id, '_paid_price', 0 );
+		//update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
 		update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
 
 		$global_stock    = new Tribe__Tickets__Global_Stock( $post_id );
@@ -436,7 +437,8 @@ trait Attendee {
 		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_currency_symbol( $product_id, true );
 
-		update_post_meta( $attendee_id, '_paid_price', $provider->get_price_value( $product_id ) );
+		update_post_meta( $attendee_id, '_paid_price', 0 );
+		//update_post_meta( $attendee_id, '_paid_price', $provider->get_price_value( $product_id ) );
 		update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
 
 		/**
@@ -575,7 +577,8 @@ trait Attendee {
 		$currency        = tribe( 'tickets.commerce.currency' );
 		$currency_symbol = $currency->get_currency_symbol( $product_id, true );
 
-		update_post_meta( $attendee_id, '_paid_price', $provider->get_price_value( $product_id ) );
+		update_post_meta( $attendee_id, '_paid_price', 0 );
+		//update_post_meta( $attendee_id, '_paid_price', $provider->get_price_value( $product_id ) );
 		update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
 
 		/**
