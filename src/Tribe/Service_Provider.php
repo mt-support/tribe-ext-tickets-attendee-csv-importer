@@ -56,7 +56,9 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'ext.tickets.attendee-csv-importer.providers.woo.integration', $woo_integration );
 		$woo_integration->hooks();
 
-		// @todo ET+ registers EDD post type in init priority 1 but that causes a problem for us (not sure why).
-		add_action( 'init', tribe_callback( 'tickets-plus.commerce.edd', 'register_eddtickets_type' ) );
+		if ( function_exists( 'EDD' ) ) {
+			// @todo ET+ registers EDD post type in init priority 1 but that causes a problem for us (not sure why).
+			add_action( 'init', tribe_callback( 'tickets-plus.commerce.edd', 'register_eddtickets_type' ) );
+		}
 	}
 }
