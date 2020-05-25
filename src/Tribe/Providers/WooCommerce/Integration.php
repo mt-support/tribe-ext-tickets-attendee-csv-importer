@@ -88,12 +88,23 @@ class Integration extends Integration_Base {
 	 * @return array List of CSV post types.
 	 */
 	public function add_csv_post_type( $post_types ) {
-		$active_modules = Tribe__Tickets__Tickets::modules();
-
-		if ( empty( $active_modules['Tribe__Tickets_Plus__Commerce__WooCommerce__Main'] ) ) {
+		if ( ! $this->is_active() ) {
 			return $post_types;
 		}
 
 		return parent::add_csv_post_type( $post_types );
+	}
+
+	/**
+	 * Check if the provider is active.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool Whether the provider is active.
+	 */
+	public function is_active() {
+		$active_modules = Tribe__Tickets__Tickets::modules();
+
+		return ! empty( $active_modules['Tribe__Tickets_Plus__Commerce__WooCommerce__Main'] );
 	}
 }
