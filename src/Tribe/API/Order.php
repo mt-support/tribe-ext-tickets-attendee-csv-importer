@@ -234,7 +234,6 @@ trait Order {
 		 */
 		$use_existing_user = (boolean) apply_filters( 'tribe_ext_tickets_attendee_csv_importer_order_api_use_existing_user', $use_existing_user );
 
-
 		$first_name = $full_name;
 		$last_name  = '';
 
