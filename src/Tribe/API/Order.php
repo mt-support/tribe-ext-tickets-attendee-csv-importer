@@ -276,6 +276,8 @@ trait Order {
 
 		$product = wc_get_product( $product_id );
 
+		$product->set_price( 0 );
+
 		$order->add_product( $product, 1 );
 
 		$address = [
@@ -294,11 +296,11 @@ trait Order {
 		// Use bank transfer method for now.
 		$order->set_payment_method( $payment_gateways['bacs'] );
 
-		// Calculate totals
+		// Calculate totals.
 		$order->calculate_totals();
 
-		// @todo Set as zero dollar order.
-		//$order->
+		// Force zero.
+		$order->set_total( 0 );
 
 		// Update status.
 		$order->update_status( $order_status, 'Order created dynamically from EA Attendee Import', true );
