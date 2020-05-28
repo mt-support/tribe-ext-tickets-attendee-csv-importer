@@ -91,6 +91,7 @@ trait Attendee {
 			'post_title'  => $full_name,
 			'post_type'   => $provider->attendee_object,
 			'ping_status' => 'closed',
+			'post_author' => 0,
 		];
 
 		if ( $order_id ) {
@@ -253,6 +254,7 @@ trait Attendee {
 			'post_title'  => $order_id . ' | ' . $full_name,
 			'post_type'   => $provider->attendee_object,
 			'ping_status' => 'closed',
+			'post_author' => 0,
 		];
 
 		if ( null !== $order_attendee_id ) {
@@ -406,6 +408,7 @@ trait Attendee {
 			'post_title'  => $ticket->name,
 			'post_type'   => $provider->attendee_object,
 			'ping_status' => 'closed',
+			'post_author' => 0,
 		];
 
 		if ( 0 < $order_id ) {
@@ -542,6 +545,7 @@ trait Attendee {
 			'post_title'  => $ticket->name,
 			'post_type'   => $provider->attendee_object,
 			'ping_status' => 'closed',
+			'post_author' => 0,
 		];
 
 		if ( 0 < $order_id ) {
