@@ -8,7 +8,7 @@
 
 namespace Tribe\Extensions\Tickets\Attendee_CSV_Importer;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider as TEC_Service_Provider;
 
 /**
  * Class Service_Provider
@@ -16,7 +16,7 @@ use tad_DI52_ServiceProvider;
  * @since   1.0.0
  * @package Tribe\Extensions\Tickets\Attendee_CSV_Importer
  */
-class Service_Provider extends tad_DI52_ServiceProvider {
+class Service_Provider extends TEC_Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

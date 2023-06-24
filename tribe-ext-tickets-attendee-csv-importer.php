@@ -4,7 +4,7 @@
  * Plugin URI:        https://theeventscalendar.com/extensions/event-tickets-attendee-csv-importer/
  * GitHub Plugin URI: https://github.com/mt-support/tribe-ext-tickets-attendee-csv-importer
  * Description:       Enable importing of Attendees from CSV to Event Tickets.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Extension Class:   Tribe\Extensions\Tickets\Attendee_CSV_Importer\Main
  * Author:            Modern Tribe, Inc.
  * Author URI:        http://m.tri.be/1971
@@ -50,7 +50,7 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 		 *
 		 * @var string
 		 */
-		const VERSION = '1.0.0';
+		const VERSION = '1.0.1';
 
 		/**
 		 * File path.
@@ -116,9 +116,9 @@ if ( class_exists( 'Tribe__Extension' ) && ! class_exists( Main::class ) ) {
 			 *
 			 * If using `tribe()`, such as with `Tribe__Dependency`, require TEC/ET version 4.4+ (January 9, 2017).
 			 */
-			$this->add_required_plugin( 'Tribe__Tickets__Main', '4.12' );
-			$this->add_required_plugin( 'Tribe__Tickets_Plus__Main', '4.12' );
-			$this->add_required_plugin( 'Tribe__Events__Main', '5.1' );
+			$this->add_required_plugin( 'Tribe__Tickets__Main', '5.6.1.2' );
+			$this->add_required_plugin( 'Tribe__Tickets_Plus__Main', '5.7.1' );
+			$this->add_required_plugin( 'Tribe__Events__Main', '6.1.2.2' );
 		}
 
 		/**
